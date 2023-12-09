@@ -1,7 +1,7 @@
 local M = {}
 
 vim.api.nvim_command([[ autocmd BufRead,BufNewFile *.gtd set filetype=gtd ]])
-vim.api.nvim_command('autocmd FileType gtd lua require("gtd").setup_gtd_file_syntax()')
+vim.api.nvim_command('autocmd FileType gtd lua require("gtd").setup_gtd_file(0)')
 
 -- Function to list files
 function M.list_gtd_files()
@@ -54,6 +54,15 @@ function M.set_keybindings(buf)
     vim.api.nvim_buf_set_keymap(buf, 'n', 'n', ':lua require("gtd").create_new_file()<CR>', {noremap = true, silent = true})
 end
 
+function M.setup_gtd_file()
+    M.setup_gtd_file_syntax()
+    M.setup_gtd_keybindings(buf)
+end
+
+function M.setup_gtd_keybindings(buf)
+    vim.api.nvim_buf_set_keymap(buf, 'n', '<CR>', ':lua require("gtd").open_link()<CR>', {noremap = true, silent = true})
+end
+
 function M.setup_gtd_file_syntax()
     -- ... highlight group definitions ...
     vim.api.nvim_command('highlight GTDTitle guifg=#61afef ctermfg=75 gui=underline cterm=underline')
@@ -66,7 +75,6 @@ function M.setup_gtd_file_syntax()
     -- Define syntax rules
     vim.api.nvim_command('syntax match GTDTitle "^.*$"')
     vim.api.nvim_command('syntax region GTDContent start="^$" end="^\\ze@\\w" keepend')
---    vim.api.nvim_command('syntax match GTDTags "@[^\\S]*"')
     vim.api.nvim_command('syntax match GTDTags "@\\S\\+"')
 end
 
@@ -116,6 +124,28 @@ function M.get_first_line(file_path)
     else
         return ""
     end
+end
+
+function M.open_link()
+    local line = vim.fn.getline('.')
+    local col = vim.fn.col('.') -- Get the cursor's column position
+    local filename_regex = "[%w%d-_]*%.gtd"
+    local link_regex = "!" .. filename_regex .. "%[[^[]*%]"
+
+    for full_link in line:gmatch(link_regex) do
+        local start, _end = line:find(full_link, 1, true)
+        if start and start <= col and col <= _end then
+            -- Extract the filename from the full link
+            local filename = full_link:match("!(" .. filename_regex .. ")")
+            if filename then
+                local file_path = vim.fn.expand('~/gtd/' .. filename)
+                vim.cmd('edit ' .. file_path)
+                return
+            end
+        end
+    end
+
+    print("No valid link found under the cursor.")
 end
 
 return M
