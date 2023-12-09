@@ -68,14 +68,16 @@ function M.setup_gtd_file_syntax()
     vim.api.nvim_command('highlight GTDTitle guifg=#61afef ctermfg=75 gui=underline cterm=underline')
     vim.api.nvim_command('highlight GTDContent guifg=#f0f0f0 ctermfg=15')
     vim.api.nvim_command('highlight GTDTags guifg=#e5c07b ctermfg=215')
+    vim.api.nvim_command('highlight GTDLink guifg=#ff6b6b ctermfg=167')
 
     -- Clear any existing syntax
     vim.api.nvim_command('syntax clear')
 
     -- Define syntax rules
     vim.api.nvim_command('syntax match GTDTitle "^.*$"')
-    vim.api.nvim_command('syntax region GTDContent start="^$" end="^\\ze@\\w" keepend')
+    vim.api.nvim_command('syntax region GTDContent start="^$" end="^\\ze@\\w" keepend contains=GTDLink')
     vim.api.nvim_command('syntax match GTDTags "@\\S\\+"')
+    vim.api.nvim_command('syntax match GTDLink "\\v!\\w+\\d+\\.gtd\\[([^\\]]+)\\]"')
 end
 
 
