@@ -9,7 +9,7 @@ ASTNode.NodeType = {
 }
 
 function ASTNode:new(type, value, children)
-    assert(NodeType[type], "Invalid node type: " .. tostring(type))
+    assert(ASTNode.NodeType[type], "Invalid node type: " .. tostring(type))
 
     local self = setmetatable({}, ASTNode)
     self.type = type

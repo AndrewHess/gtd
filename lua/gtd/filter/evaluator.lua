@@ -48,7 +48,12 @@ end
 
 -- Evaluate a Not node
 function Evaluator.evaluateNot(node, fileTags)
-    return not Evaluator.evaluate(node.children[1], fileTags)
+    for _, child in ipairs(node.children) do
+        if Evaluator.evaluate(child, fileTags) then
+            return false
+        end
+    end
+    return true
 end
 
 return Evaluator
