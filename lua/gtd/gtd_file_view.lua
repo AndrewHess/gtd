@@ -1,6 +1,6 @@
 local GtdFileView = {}
 
-function GtdFileView.setup_gtd_file()
+function GtdFileView.setup_gtd_file(buf)
     GtdFileView.setup_gtd_file_syntax()
     GtdFileView.setup_gtd_keybindings(buf)
 end
