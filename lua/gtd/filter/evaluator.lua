@@ -16,6 +16,9 @@ function Evaluator.evaluate(node, fileTags)
     elseif node.type == ASTNode.NodeType.Not then
         return Evaluator.evaluateNot(node, fileTags)
 
+    elseif node.type == nil then
+        return false
+
     else
         error("Unknown node type: " .. tostring(node.type))
     end
@@ -23,7 +26,13 @@ end
 
 -- Evaluate a Tag node
 function Evaluator.evaluateTag(node, fileTags)
-    return fileTags[node.value] ~= nil
+    for _, tag in ipairs(fileTags) do
+        if tag == node.value then
+            return true
+        end
+    end
+
+    return false
 end
 
 -- Evaluate an And node
@@ -33,6 +42,7 @@ function Evaluator.evaluateAnd(node, fileTags)
             return false
         end
     end
+
     return true
 end
 
@@ -43,6 +53,7 @@ function Evaluator.evaluateOr(node, fileTags)
             return true
         end
     end
+
     return false
 end
 
@@ -53,6 +64,7 @@ function Evaluator.evaluateNot(node, fileTags)
             return false
         end
     end
+
     return true
 end
 

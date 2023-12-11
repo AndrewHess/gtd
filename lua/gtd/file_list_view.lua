@@ -1,19 +1,30 @@
 local FileListView = {}
 
+local Filter = require('gtd.filter')
+
 -- Function to list files
-function FileListView.list_gtd_files()
+function FileListView.list_gtd_files(filter_text)
     local gtd_path = vim.fn.expand('~/gtd/')  -- Expands to the full path
     local files = vim.fn.readdir(gtd_path)  -- Reads the directory
 
     -- Create a new buffer
     local buf = vim.api.nvim_create_buf(false, true)
 
+    -- Setup the view filter.
+    Filter.set_filter(filter_text)
+
     -- Add each file as a line in the buffer
     for _, file in ipairs(files) do
         local file_path = gtd_path .. file
+        if file == "views" or not Filter.file_passes_filter(file_path) then
+            goto continue
+        end
+
         local first_line = FileListView.get_first_line(file_path)
         local display_line = file .. " [" .. first_line .. "]"
         vim.api.nvim_buf_set_lines(buf, -1, -1, false, {display_line})
+
+        ::continue::
     end
 
     -- Open the buffer in a new window

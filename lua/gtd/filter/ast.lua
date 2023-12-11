@@ -31,8 +31,8 @@ function ASTNode.Or(children)
     return ASTNode:new("Or", nil, children)
 end
 
-function ASTNode.Not(child)
-    return ASTNode:new("Not", nil, {child})
+function ASTNode.Not(children)
+    return ASTNode:new("Not", nil, children)
 end
 
 return ASTNode

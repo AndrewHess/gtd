@@ -1,64 +1,41 @@
 local Filter = {}
 
-local ASTNode = require('filter.ast')
-local Evaluator = require('filter.evaluator')
-local Parser = require('filter.parser')
+local ASTNode = require('gtd.filter.ast')
+local Evaluator = require('gtd.filter.evaluator')
+local Parser = require('gtd.filter.parser')
 
-local function Filter.extractTagsFromFile(filePath)
+local ast_node = nil -- Call set_filter to set the AST
+
+function Filter.set_filter(filter_text)
+	ast_node = Parser.parse(filter_text)
+end
+
+local function extract_tags_from_file(filePath)
     local tags = {}
     for line in io.lines(filePath) do
         for tag in line:gmatch("(%s@[%S]+)") do
             -- Remove leading whitespace
             tag = tag:match("@[%S]+")
-            tags[tag] = true
+--            tags[tag] = true
+            table.insert(tags, tag)
         end
         -- Check for a tag at the start of the line
         local initialTag = line:match("^@[%S]+")
         if initialTag then
-            tags[initialTag] = true
+--            tags[initialTag] = true
+            table.insert(tags, initialTag)
         end
     end
     return tags
 end
 
-function Filter.evaluateFileAgainstAST(ast, filePath)
-    local fileTags = extractTagsFromFile(filePath)
-    return Evaluator.evaluate(ast, fileTags)
-end
-
-local function Filter.readFilterFile(filterFilePath)
-    -- Read the filter file and return its contents
-    local file = io.open(filterFilePath, "r")
-    if not file then error("Unable to open filter file: " .. filterFilePath) end
-    local content = file:read("*a")
-    file:close()
-    return content
-end
-
-local function Filter.getGtdFilesInDirectory(directoryPath)
-    local files = {}
-    -- Assuming LuaFileSystem (lfs) is available; otherwise, this part needs OS-specific handling
-    for file in lfs.dir(directoryPath) do
-        if file:match("%.gtd$") then
-            table.insert(files, directoryPath .. '/' .. file)
-        end
-    end
-    return files
-end
-
-local function Filter.filterFiles(filterFilePath, directoryPath)
-    local filterContent = readFilterFile(filterFilePath)
-    local ast = Parser.parse(filterContent)
-
-    local passingFiles = {}
-    local gtdFiles = getGtdFilesInDirectory(directoryPath)
-    for _, filePath in ipairs(gtdFiles) do
-        if FileEvaluator.evaluateFileAgainstAST(ast, filePath) then
-            table.insert(passingFiles, filePath)
-        end
+function Filter.file_passes_filter(file_path)
+    if ast_node == nil then
+        error("Error: Filter not set.")
     end
 
-    return passingFiles
+    local fileTags = extract_tags_from_file(file_path)
+    return Evaluator.evaluate(ast_node, fileTags)
 end
 
 return Filter

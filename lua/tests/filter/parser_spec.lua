@@ -35,7 +35,17 @@ describe("Parser Tests", function()
         end)
     end)
 
-    describe("Nested Expressions Parsing", function()
+    describe("Simple Nested Expressions Parsing", function()
+        it("parses nested expressions", function()
+            local ast = Parser.parse("and(@work, not(@done))")
+            assert.are.same(ast, ASTNode.And({
+                ASTNode.Tag("@work"),
+                ASTNode.Not({ASTNode.Tag("@done")})
+            }))
+        end)
+    end)
+
+    describe("More Nested Expressions Parsing", function()
         it("parses nested expressions", function()
             local ast = Parser.parse("and(@work, or(@home, not(@vacation)))")
             assert.are.same(ast, ASTNode.And({

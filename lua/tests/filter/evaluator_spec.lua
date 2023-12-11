@@ -5,13 +5,13 @@ describe("Evaluator Module Tests", function()
     describe("evaluateTag function", function()
         it("should return true if tag is present", function()
             local node = { type = "Tag", value = "@todo" }
-            local fileTags = { ["@todo"] = true }
+            local fileTags = { "@todo" }
             assert.is_true(Evaluator.evaluateTag(node, fileTags))
         end)
 
         it("should return false if tag is not present", function()
             local node = { type = "Tag", value = "@todo" }
-            local fileTags = { ["@done"] = true }
+            local fileTags = { "@done" }
             assert.is_false(Evaluator.evaluateTag(node, fileTags))
         end)
     end)
@@ -23,7 +23,7 @@ describe("Evaluator Module Tests", function()
                 { type = "Tag", value = "@work" }, 
                 { type = "Tag", value = "@urgent" } 
             }}
-            local fileTags = { ["@work"] = true, ["@urgent"] = true }
+            local fileTags = { "@work", "@urgent" }
             assert.is_true(Evaluator.evaluateAnd(node, fileTags))
         end)
 
@@ -32,7 +32,7 @@ describe("Evaluator Module Tests", function()
                 { type = "Tag", value = "@work" }, 
                 { type = "Tag", value = "@urgent" } 
             }}
-            local fileTags = { ["@work"] = true }
+            local fileTags = { "@work" }
             assert.is_false(Evaluator.evaluateAnd(node, fileTags))
         end)
     end)
@@ -47,7 +47,7 @@ describe("Evaluator Module Tests", function()
                     { type = "Tag", value = "@optional" }
                 }
             }
-            local fileTags = { ["@urgent"] = true }
+            local fileTags = { "@urgent" }
             assert.is_true(Evaluator.evaluateOr(node, fileTags))
         end)
 
@@ -59,7 +59,7 @@ describe("Evaluator Module Tests", function()
                     { type = "Tag", value = "@optional" }
                 }
             }
-            local fileTags = { ["@completed"] = true }
+            local fileTags = { "@completed" }
             assert.is_false(Evaluator.evaluateOr(node, fileTags))
         end)
 
@@ -71,7 +71,7 @@ describe("Evaluator Module Tests", function()
                     { type = "Tag", value = "@completed" }
                 }
             }
-            local fileTags = { ["@completed"] = true, ["@optional"] = true }
+            local fileTags = { "@completed", "@optional" }
             assert.is_true(Evaluator.evaluateOr(node, fileTags))
         end)
     end)
@@ -82,7 +82,7 @@ describe("Evaluator Module Tests", function()
             local node = { type = "Not", children = { 
                 { type = "Tag", value = "@work" } 
             }}
-            local fileTags = { ["@home"] = true }
+            local fileTags = { "@home" }
             assert.is_true(Evaluator.evaluateNot(node, fileTags))
         end)
 
@@ -90,7 +90,7 @@ describe("Evaluator Module Tests", function()
             local node = { type = "Not", children = { 
                 { type = "Tag", value = "@work" } 
             }}
-            local fileTags = { ["@work"] = true }
+            local fileTags = { "@work" }
             assert.is_false(Evaluator.evaluateNot(node, fileTags))
         end)
     end)
@@ -109,16 +109,16 @@ describe("Evaluator Module Tests", function()
                     }}
                 }
             }
-            local fileTags = { ["@work"] = true, ["@urgent"] = true }
+            local fileTags = { "@work", "@urgent" }
             assert.is_true(Evaluator.evaluate(node, fileTags))
 
-            local fileTags2 = { ["@urgent"] = true }
+            local fileTags2 = { "@urgent" }
             assert.is_false(Evaluator.evaluate(node, fileTags2))
 
-            local fileTags3 = { ["@work"] = true }
+            local fileTags3 = { "@work" }
             assert.is_true(Evaluator.evaluate(node, fileTags3))
 
-            local fileTags4 = { ["@work"] = true, ["@completed"] = true }
+            local fileTags4 = { "@work", "@completed" }
             assert.is_false(Evaluator.evaluate(node, fileTags4))
         end)
     end)
