@@ -2,10 +2,24 @@ local FileListView = {}
 
 local Filter = require('gtd.filter')
 
+-- Custom comparison function for natural sort
+local function naturalSort(a, b)
+    -- Convert strings to sequences of digits and non-digits
+    local function digitize(str)
+        local result, _ = str:gsub('(%d+)', function (d) return string.format('%12s', d) end)
+        return result
+    end
+
+    return digitize(a) < digitize(b)
+end
+
 -- Function to list files
 function FileListView.list_gtd_files(filter_text)
     local gtd_path = vim.fn.expand('~/gtd/')  -- Expands to the full path
     local files = vim.fn.readdir(gtd_path)  -- Reads the directory
+
+    -- Sort the files naturally
+    table.sort(files, naturalSort)
 
     -- Create a new buffer
     local buf = vim.api.nvim_create_buf(false, true)
