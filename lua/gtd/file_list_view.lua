@@ -30,7 +30,7 @@ function FileListView.list_gtd_files(filter_text)
     -- Add each file as a line in the buffer
     for _, file in ipairs(files) do
         local file_path = gtd_path .. file
-        if file == "views" or not Filter.file_passes_filter(file_path) then
+        if not file:match("^item") or not Filter.file_passes_filter(file_path) then
             goto continue
         end
 
