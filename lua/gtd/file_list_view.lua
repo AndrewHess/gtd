@@ -24,6 +24,9 @@ function FileListView.list_gtd_files(filter_text)
     -- Create a new buffer
     local buf = vim.api.nvim_create_buf(false, true)
 
+    -- Add the filter text to the buffer
+    vim.api.nvim_buf_set_lines(buf, 0, 0, false, {filter_text})
+
     -- Setup the view filter.
     Filter.set_filter(filter_text)
 
@@ -68,6 +71,7 @@ function FileListView.setup_file_list_syntax(buf)
 
     -- Define syntax matches
     vim.api.nvim_buf_call(buf, function()
+        vim.api.nvim_command('syntax region Filter start="^\\%1l" end="^.*$"')
         vim.cmd('syntax match GTDFileName /^.*\\.gtd/ containedin=ALL')
         vim.cmd('syntax match GTDBrackets /\\[.*\\]/ containedin=ALL')
         vim.cmd('syntax match GTDFirstLine /\\] .* \\[/ contained')
@@ -77,14 +81,13 @@ function FileListView.setup_file_list_syntax(buf)
     vim.api.nvim_command('highlight GTDFileName guifg=#707070 ctermfg=244')
     vim.api.nvim_command('highlight GTDFirstLine guifg=#61afef ctermfg=75')
     vim.api.nvim_command('highlight GTDBrackets guifg=#f0f0f0 ctermfg=15')
+    vim.api.nvim_command('highlight Filter guifg=#fabd2f ctermfg=214 gui=bold cterm=bold')
 end
 
 function FileListView.set_keybindings(buf)
-    -- Set keybinding for opening files
     vim.api.nvim_buf_set_keymap(buf, 'n', '<CR>', ':lua require("gtd.file_list_view").open_file()<CR>', {noremap = true, silent = true})
-
-     -- Keybinding for creating a new file
-    vim.api.nvim_buf_set_keymap(buf, 'n', 'n', ':lua require("gtd.file_list_view").create_new_file()<CR>', {noremap = true, silent = true})
+    vim.api.nvim_buf_set_keymap(buf, 'n', '<leader>n', ':lua require("gtd.file_list_view").create_new_file()<CR>', {noremap = true, silent = true})
+    vim.api.nvim_buf_set_keymap(buf, 'n', '<leader>r', ':lua require("gtd.file_list_view").refresh_filtered_view()<CR>', {noremap = true, silent = true})
 end
 
 function FileListView.open_file()
@@ -120,6 +123,21 @@ function FileListView.create_new_file()
 
     -- Create and open the new file
     vim.cmd('edit ' .. new_file_path)
+end
+
+function FileListView.refresh_filtered_view()
+    -- Get the current buffer number
+    local bufnr = vim.api.nvim_get_current_buf()
+
+    -- Get the first line from the current buffer
+    local firstLine = vim.api.nvim_buf_get_lines(bufnr, 0, 1, false)[1]
+
+    -- Call the list_gtd_files function with the first line as filter text
+    if firstLine then
+        FileListView.list_gtd_files(firstLine)
+    else
+        print("Buffer is empty or error occurred")
+    end
 end
 
 return FileListView
