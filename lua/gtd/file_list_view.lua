@@ -38,7 +38,7 @@ function FileListView.list_gtd_files(filter_text)
         end
 
         local first_line = FileListView.get_first_line(file_path)
-        local display_line = file .. " [" .. first_line .. "]"
+        local display_line = file .. "[" .. first_line .. "]"
         vim.api.nvim_buf_set_lines(buf, -1, -1, false, {display_line})
 
         ::continue::
