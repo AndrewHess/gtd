@@ -78,10 +78,10 @@ function FileListView.setup_file_list_syntax(buf)
     end)
 
     -- Set the colors
-    vim.api.nvim_command('highlight GTDFileName guifg=#707070 ctermfg=244')
+    vim.api.nvim_command('highlight GTDFileName guifg=#606060 ctermfg=244')
     vim.api.nvim_command('highlight GTDFirstLine guifg=#61afef ctermfg=75')
     vim.api.nvim_command('highlight GTDBrackets guifg=#f0f0f0 ctermfg=15')
-    vim.api.nvim_command('highlight Filter guifg=#fabd2f ctermfg=214 gui=bold cterm=bold')
+    vim.api.nvim_command('highlight Filter guifg=#ed9d1c ctermfg=214 gui=bold cterm=bold')
 end
 
 function FileListView.set_keybindings(buf)
