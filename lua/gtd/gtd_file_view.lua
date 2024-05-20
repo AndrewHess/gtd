@@ -19,8 +19,8 @@ function GtdFileView.setup_gtd_file_syntax()
     vim.api.nvim_command('syntax match GTDLink "\\v!\\w+\\d+\\.gtd\\[([^\\]]+)\\]"')
 
     -- ... highlight group definitions ...
-    vim.api.nvim_command('highlight GTDTitle guifg=#ed970c ctermfg=214 gui=bold cterm=bold')
-    vim.api.nvim_command('highlight GTDTags guifg=#b563f7 ctermfg=140')
+    vim.api.nvim_command('highlight GTDTitle guifg=#faa719 ctermfg=214 gui=bold cterm=bold')
+    vim.api.nvim_command('highlight GTDTags guifg=#8553c7 ctermfg=140')
     vim.api.nvim_command('highlight GTDLink guifg=#8eb9ed ctermfg=117')
 
     -- Define common end pattern
@@ -28,7 +28,7 @@ function GtdFileView.setup_gtd_file_syntax()
 
     -- Highlighting for Todo Items
     vim.api.nvim_command('syntax region GTDTodo start="^\\s*- " end="' .. endPattern .. '" contains=GTDLink')
-    vim.api.nvim_command('highlight GTDTodo guifg=#8eedc1 guibg=#1C1C1C ctermfg=214')
+    -- vim.api.nvim_command('highlight GTDTodo')
 
     -- Highlighting for Completed Items
     vim.api.nvim_command('syntax region GTDDone start="^\\s*✓ " end="' .. endPattern .. '"')
@@ -36,7 +36,7 @@ function GtdFileView.setup_gtd_file_syntax()
 
     -- Highlighting for Notes
     vim.api.nvim_command('syntax region GTDNote start="^\\s*\\^ " end="' .. endPattern .. '" contains=GTDLink')
-    vim.api.nvim_command('highlight GTDNote gui=italic cterm=italic')
+    vim.api.nvim_command('highlight GTDNote guifg=#8553c7 guibg=#1C1C1C ctermfg=214 gui=italic cterm=italic')
 end
 
 function GtdFileView.open_link()
