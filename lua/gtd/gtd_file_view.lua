@@ -13,6 +13,9 @@ function GtdFileView.setup_gtd_file_syntax()
     -- Clear any existing syntax
     vim.api.nvim_command('syntax clear')
 
+    -- Set the default text color
+    vim.api.nvim_command('highlight Normal guifg=#ffffff guibg=none ctermfg=white ctermbg=none')
+
     -- Define syntax rules
     vim.api.nvim_command('syntax region GTDTitle start="^\\%1l" end="^.*$"')
     vim.api.nvim_command('syntax match GTDTags "@\\S\\+"')
@@ -28,11 +31,11 @@ function GtdFileView.setup_gtd_file_syntax()
 
     -- Highlighting for Todo Items
     vim.api.nvim_command('syntax region GTDTodo start="^\\s*- " end="' .. endPattern .. '" contains=GTDLink')
-    -- vim.api.nvim_command('highlight GTDTodo')
+    vim.api.nvim_command('highlight GTDTodo guifg=#ffffff guibg=#1C1C1C ctermfg=214')
 
     -- Highlighting for Completed Items
     vim.api.nvim_command('syntax region GTDDone start="^\\s*✓ " end="' .. endPattern .. '"')
-    vim.api.nvim_command('highlight GTDDone guifg=#606060 guibg=none gui=strikethrough ctermfg=green ctermbg=none cterm=strikethrough')
+    vim.api.nvim_command('highlight GTDDone guifg=#808080 guibg=none gui=strikethrough ctermfg=green ctermbg=none cterm=strikethrough')
 
     -- Highlighting for Notes
     vim.api.nvim_command('syntax region GTDNote start="^\\s*\\^ " end="' .. endPattern .. '" contains=GTDLink')
